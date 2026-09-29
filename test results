@@ -1,0 +1,637 @@
+PS C:\Windows\system32> dcdiag /test:Advertising
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Advertising
+         ......................... DC02 passed test Advertising
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> dcdiag /test:DNS
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+
+      Starting test: DNS
+
+         DNS Tests are running and not hung. Please wait a few minutes...
+         ......................... DC02 passed test DNS
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+      Starting test: DNS
+         Test results for domain controllers:
+
+            DC: DC02.rain.lab
+            Domain: rain.lab
+
+
+               TEST: Basic (Basc)
+                  Warning: Adapter BC:24:11:60:0A:1D has dynamic IP address (can be a misconfiguration)
+                  Warning: adapter [00000009] Intel(R) 82574L Gigabit Network Connection has invalid DNS server: 10.102.31.206
+                  (<name unavailable>)
+                  Warning: The A record for this DC was not found
+                  No host records (A or AAAA) were found for this DC
+
+               TEST: Forwarders/Root hints (Forw)
+                  Error: All forwarders in the forwarder list are invalid.
+
+               TEST: Records registration (RReg)
+                  Network Adapter [00000009] Intel(R) 82574L Gigabit Network Connection:
+                     Warning:
+                     Missing CNAME record at DNS server 10.102.31.206:
+                     782f87ee-e8b8-401a-bc04-0ee3d3d860a7._msdcs.rain.lab
+
+                     Warning:
+                     Missing A record at DNS server 10.102.31.206:
+                     DC02.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.1fe17e0d-e69b-4923-a0ba-49cfd2cd068e.domains._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kerberos._tcp.dc._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.dc._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kerberos._tcp.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kerberos._udp.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kpasswd._tcp.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.Default-First-Site-Name._sites.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kerberos._tcp.Default-First-Site-Name._sites.dc._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.Default-First-Site-Name._sites.dc._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _kerberos._tcp.Default-First-Site-Name._sites.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.gc._msdcs.rain.lab
+
+                     Warning:
+                     Missing A record at DNS server 10.102.31.206:
+                     gc._msdcs.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _gc._tcp.Default-First-Site-Name._sites.rain.lab
+
+                     Error:
+                     Missing SRV record at DNS server 10.102.31.206:
+                     _ldap._tcp.Default-First-Site-Name._sites.gc._msdcs.rain.lab
+
+               Error: Record registrations cannot be found for all the network adapters
+
+         Summary of test results for DNS servers used by the above domain controllers:
+
+            DNS server: 10.102.31.206 (<name unavailable>)
+               2 test failure on this DNS server
+               Name resolution is not functional. _ldap._tcp.rain.lab. failed on the DNS server 10.102.31.206
+
+            DNS server: 2001:500:1::53 (H.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:1::53
+            DNS server: 2001:500:2::c (C.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:2::c
+            DNS server: 2001:500:2d::d (D.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:2d::d
+            DNS server: 2001:500:2f::f (F.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:2f::f
+            DNS server: 2001:500:84::b (B.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:84::b
+            DNS server: 2001:500:9f::42 (L.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:500:9f::42
+            DNS server: 2001:503:ba3e::2:30 (A.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:503:ba3e::2:30
+            DNS server: 2001:503:c27::2:30 (J.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:503:c27::2:30
+            DNS server: 2001:7fd::1 (K.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:7fd::1
+            DNS server: 2001:7fe::53 (I.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:7fe::53
+            DNS server: 2001:dc3::35 (M.ROOT-SERVERS.NET.)
+               1 test failure on this DNS server
+               PTR record query for the 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa failed on the DNS server 2001:dc3::35
+         Summary of DNS test results:
+
+                                            Auth Basc Forw Del  Dyn  RReg Ext
+            _________________________________________________________________
+            Domain: rain.lab
+               DC02                         PASS FAIL FAIL PASS PASS FAIL n/a
+
+         ......................... rain.lab failed test DNS
+PS C:\Windows\system32> dcdiag /test:SysVolCheck
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: SysVolCheck
+         ......................... DC02 passed test SysVolCheck
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> dcdiag /test:NetLogons
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: NetLogons
+         ......................... DC02 passed test NetLogons
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> repadmin /replsummary
+Replication Summary Start Time: 2026-09-25 13:33:32
+
+Beginning data collection for replication summary, this may take awhile:
+  .....
+
+
+Source DSA          largest delta    fails/total %%   error
+ DC01                      24m:43s    0 /   5    0
+ DC02                      39m:48s    0 /   5    0
+
+
+Destination DSA     largest delta    fails/total %%   error
+ DC01                      39m:48s    0 /   5    0
+ DC02                      24m:43s    0 /   5    0
+
+
+PS C:\Windows\system32> repadmin /showrepl
+
+Repadmin: running command /showrepl against full DC localhost
+Default-First-Site-Name\DC02
+DSA Options: IS_GC
+Site Options: (none)
+DSA object GUID: 782f87ee-e8b8-401a-bc04-0ee3d3d860a7
+DSA invocationID: c76d278f-9aec-40d6-9dbc-002d2b89a460
+
+==== INBOUND NEIGHBORS ======================================
+
+DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:30:07 was successful.
+
+CN=Configuration,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:08:49 was successful.
+
+CN=Schema,CN=Configuration,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:08:49 was successful.
+
+DC=DomainDnsZones,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:30:20 was successful.
+
+DC=ForestDnsZones,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:24:11 was successful.
+
+PS C:\Windows\system32> Get-ADDomainController -Filter * |
+>> Select-Object HostName,IPv4Address,Site,IsGlobalCatalog,OperationMasterRoles
+
+
+HostName             : DC01.rain.lab
+IPv4Address          : 10.102.31.6
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster...}
+
+HostName             : DC02.rain.lab
+IPv4Address          : 10.102.31.168
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {}
+
+
+
+PS C:\Windows\system32> dcdiag /test:DNS
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         Although the Guid DNS name (782f87ee-e8b8-401a-bc04-0ee3d3d860a7._msdcs.rain.lab) resolved to the IP address
+         (10.102.31.168), which could not be pinged, the server name (DC02.rain.lab) resolved to the IP address
+         (fe80::f850:6f98:9ec3:ddbb%14) and could be pinged.  Check that the IP address is registered correctly with the DNS
+         server.
+         Got error while checking LDAP and RPC connectivity. Please check your firewall settings.
+         ......................... DC02 failed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+
+      Starting test: DNS
+
+         DNS Tests are running and not hung. Please wait a few minutes...
+         ......................... DC02 passed test DNS
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+      Starting test: DNS
+         Test results for domain controllers:
+
+            DC: DC02.rain.lab
+            Domain: rain.lab
+
+
+               TEST: Basic (Basc)
+                  Error: No LDAP connectivity
+                  No host records (A or AAAA) were found for this DC
+
+            TEST: Records registration (RReg)
+               Error: Record registrations cannot be found for all the network adapters
+
+         Summary of DNS test results:
+
+                                            Auth Basc Forw Del  Dyn  RReg Ext
+            _________________________________________________________________
+            Domain: rain.lab
+               DC02                         PASS FAIL PASS PASS PASS FAIL n/a
+
+         ......................... rain.lab failed test DNS
+PS C:\Windows\system32> dcdiag /test:Advertising
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Advertising
+         ......................... DC02 passed test Advertising
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> dcdiag /test:SysVolCheck
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: SysVolCheck
+         ......................... DC02 passed test SysVolCheck
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> dcdiag /test:NetLogons
+
+Directory Server Diagnosis
+
+Performing initial setup:
+   Trying to find home server...
+   Home Server = DC02
+   * Identified AD Forest.
+   Done gathering initial info.
+
+Doing initial required tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: Connectivity
+         ......................... DC02 passed test Connectivity
+
+Doing primary tests
+
+   Testing server: Default-First-Site-Name\DC02
+      Starting test: NetLogons
+         ......................... DC02 passed test NetLogons
+
+
+   Running partition tests on : ForestDnsZones
+
+   Running partition tests on : DomainDnsZones
+
+   Running partition tests on : Schema
+
+   Running partition tests on : Configuration
+
+   Running partition tests on : rain
+
+   Running enterprise tests on : rain.lab
+PS C:\Windows\system32> Get-ADDomainController -Filter * |
+>> Select-Object HostName,IPv4Address,Site,IsGlobalCatalog,OperationMasterRoles
+
+
+HostName             : DC01.rain.lab
+IPv4Address          : 10.102.31.6
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster...}
+
+HostName             : DC02.rain.lab
+IPv4Address          : 10.102.31.7
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {}
+
+
+
+PS C:\Windows\system32> repadmin /replsummary
+Replication Summary Start Time: 2026-09-25 13:40:33
+
+Beginning data collection for replication summary, this may take awhile:
+  .....
+
+
+Source DSA          largest delta    fails/total %%   error
+ DC01                      31m:44s    0 /   5    0
+ DC02                      46m:49s    0 /   5    0
+
+
+Destination DSA     largest delta    fails/total %%   error
+ DC01                      46m:49s    0 /   5    0
+ DC02                      31m:44s    0 /   5    0
+
+
+PS C:\Windows\system32> repadmin /showrepl
+
+Repadmin: running command /showrepl against full DC localhost
+Default-First-Site-Name\DC02
+DSA Options: IS_GC
+Site Options: (none)
+DSA object GUID: 782f87ee-e8b8-401a-bc04-0ee3d3d860a7
+DSA invocationID: c76d278f-9aec-40d6-9dbc-002d2b89a460
+
+==== INBOUND NEIGHBORS ======================================
+
+DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:39:00 was successful.
+
+CN=Configuration,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:08:49 was successful.
+
+CN=Schema,CN=Configuration,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:08:49 was successful.
+
+DC=DomainDnsZones,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:38:24 was successful.
+
+DC=ForestDnsZones,DC=rain,DC=lab
+    Default-First-Site-Name\DC01 via RPC
+        DSA object GUID: 00404a79-5e7e-4b01-8bde-377e4258b836
+        Last attempt @ 2026-09-25 13:38:03 was successful.
+
+PS C:\Windows\system32> Get-ADDomainController -Filter * |
+>> Select-Object HostName,IPv4Address,Site,IsGlobalCatalog,OperationMasterRoles
+
+
+HostName             : DC01.rain.lab
+IPv4Address          : 10.102.31.6
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster...}
+
+HostName             : DC02.rain.lab
+IPv4Address          : 10.102.31.7
+Site                 : Default-First-Site-Name
+IsGlobalCatalog      : True
+OperationMasterRoles : {}
+
+
+
+PS C:\Windows\system32> nslookup -type=SRV _ldap._tcp.dc._msdcs.rain.lab
+Server:  DC01.rain.lab
+Address:  10.102.31.6
+
+_ldap._tcp.dc._msdcs.rain.lab   SRV service location:
+          priority       = 0
+          weight         = 100
+          port           = 389
+          svr hostname   = dc01.rain.lab
+_ldap._tcp.dc._msdcs.rain.lab   SRV service location:
+          priority       = 0
+          weight         = 100
+          port           = 389
+          svr hostname   = DC02.rain.lab
+dc01.rain.lab   internet address = 10.102.31.6
+DC02.rain.lab   internet address = 10.102.31.7
+PS C:\Windows\system32> nltest /dclist:rain.lab
+Get list of DCs in domain 'rain.lab' from '\\DC02.rain.lab'.
+    DC01.rain.lab [PDC]  [DS] Site: Default-First-Site-Name
+    DC02.rain.lab        [DS] Site: Default-First-Site-Name
+The command completed successfully
+PS C:\Windows\system32> nltest /dsgetdc:rain.lab /force
+           DC: \\DC02.rain.lab
+      Address: \\10.102.31.7
+     Dom Guid: 1fe17e0d-e69b-4923-a0ba-49cfd2cd068e
+     Dom Name: rain.lab
+  Forest Name: rain.lab
+ Dc Site Name: Default-First-Site-Name
+Our Site Name: Default-First-Site-Name
+        Flags: GC DS LDAP KDC TIMESERV WRITABLE DNS_DC DNS_DOMAIN DNS_FOREST CLOSE_SITE FULL_SECRET WS DS_8 DS_9 DS_10
+The command completed successfully
+PS C:\Windows\system32> Get-DnsClientServerAddress -AddressFamily ipv4
+
+InterfaceAlias               Interface Address ServerAddresses
+                             Index     Family
+--------------               --------- ------- ---------------
+Ethernet                            14 IPv4    {10.102.31.6, 10.102.31.7}
+Loopback Pseudo-Interface 1          1 IPv4    {}
