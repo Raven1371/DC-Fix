@@ -13,3 +13,17 @@ ForEach-Object {
         SubjectKeyID = $ski.Format($false)
     }
 }
+
+** --Export Cert via PowerShell-- **
+
+$cert = Get-ChildItem Cert:\LocalMachine\Root |
+Where-Object {
+    $_.Thumbprint -eq "AD0D88C92C56F8E1656C967ABFB0E1A99F553B47"
+} |
+Select-Object -First 1
+
+Export-Certificate `
+  -Cert $cert `
+  -FilePath "C:\Temp\rain-DC-CA.cer" `
+  -Type CERT
+
