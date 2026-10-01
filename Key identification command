@@ -1,0 +1,15 @@
+Get-ChildItem Cert:\LocalMachine\Root |
+Where-Object {$_.Subject -like "*CN=rain-DC-CA*"} |
+ForEach-Object {
+    $ski = $_.Extensions |
+        Where-Object {$_.Oid.Value -eq "2.5.29.14"}
+
+    [PSCustomObject]@{
+        Subject      = $_.Subject
+        Thumbprint   = $_.Thumbprint
+        SerialNumber = $_.SerialNumber
+        NotBefore    = $_.NotBefore
+        NotAfter     = $_.NotAfter
+        SubjectKeyID = $ski.Format($false)
+    }
+}
