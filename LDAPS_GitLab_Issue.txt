@@ -1,0 +1,206 @@
+LDAPS MIGRATION AND LDAP SIGNING ENFORCEMENT
+
+
+REQUIREMENTS
+
+[X] Audit LDAP usage before enforcing LDAP signing
+[X] Identify insecure LDAP client(s)
+[X] Verify LDAPS availability on DC01 and DC02
+[X] Validate DC certificate SAN, issuer, validity, and Server Authentication EKU
+[X] Establish Proxmox trust for the internal `rain-DC-CA`
+[X] Convert the Proxmox Active Directory realm from LDAP to LDAPS
+[X] Validate Proxmox authentication through DC01
+[X] Validate Proxmox LDAPS failover authentication through DC02
+[X] Back up the Default Domain Controllers Policy
+[X] Enforce `Domain controller: LDAP server signing requirements = Require signing`
+[X] Validate `LDAPServerIntegrity = 2`
+[X] Re-test authentication and DC failover with LDAP signing enforced
+[X] Validate no new insecure Proxmox LDAP bind events
+[X] Document backups, recovery locations, and replication steps
+
+
+SUMMARY
+
+Completed remediation of insecure LDAP authentication between Proxmox and the rain.lab Active Directory domain. The work required auditing live LDAP traffic, identifying the specific client generating unsigned/simple LDAP binds, validating the PKI chain on both domain controllers, correcting certificate trust on the Debian/Proxmox host, migrating the Proxmox AD realm to certificate-validated LDAPS, validating primary and fallback authentication, and only then enforcing LDAP signing on the domain controllers.
+
+The final configuration was validated with LDAP signing set to Require signing, including a controlled DC01 outage in which Proxmox successfully authenticated through DC02.
+
+
+INITIAL FINDING
+
+LDAP Interface diagnostic logging on the domain controllers produced Directory Service Event ID 2889 showing insecure LDAP binds from:
+
+• **Client:** Proxmox
+• **Client IP:** `10.102.31.240`
+• **Binding Type:** `1`
+• **Condition:** Simple LDAP bind without TLS/signing protection
+
+This was significant because immediately enforcing LDAP signing would have broken Proxmox domain authentication.
+
+
+INVESTIGATION AND REMEDIATION PERFORMED
+
+
+LDAP auditing
+
+Enabled LDAP Interface diagnostic logging on DC01 and DC02 and reviewed Directory Service Events 2887/2889.
+
+The audit isolated 10.102.31.240 as the system generating the insecure binds. The address was confirmed to be the Proxmox host.
+
+
+LDAPS service validation
+
+Confirmed TCP/636 was listening and reachable on both domain controllers:
+
+• `dc01.rain.lab` / `10.102.31.6`
+• `dc02.rain.lab` / `10.102.31.7`
+
+
+Proxmox DNS correction
+
+Validated that Proxmox could resolve both domain-controller FQDNs through the internal Active Directory DNS servers. The final resolver path uses:
+
+search rain.lab
+nameserver 10.102.31.6
+nameserver 10.102.31.7
+
+Both dc01.rain.lab and dc02.rain.lab resolve to their correct addresses.
+
+
+Domain-controller certificate validation
+
+Captured and inspected the LDAPS certificates presented by both DCs.
+
+Validated:
+
+• Issuer: `CN=rain-DC-CA, DC=rain, DC=lab`
+• DC01 SAN: `DNS:DC01.rain.lab`
+• DC02 SAN: `DNS:DC02.rain.lab`
+• Certificates were within their validity periods
+• Extended Key Usage included **TLS Web Server Authentication**
+
+
+CA identification and trust-chain remediation
+
+Identified the correct rain-DC-CA root certificate. Duplicate visible entries were verified to contain the same certificate material by matching:
+
+• Thumbprint: `AD0D88C92C56F8E1656C967ABFB0E1A99F553B47`
+• Subject Key ID: `68F6992515950F57F2268D4358B71F3C91A692F7`
+
+The public CA certificate was exported from Windows and transferred to Proxmox.
+
+The Windows-exported certificate was converted to PEM format and installed in the Debian trust store under:
+
+/usr/local/share/ca-certificates/rain/rain-DC-CA.crt
+
+After update-ca-certificates, OpenSSL validation against both DCs returned:
+
+Verify return code: 0 (ok)
+
+This confirmed Proxmox trusted the certificate chain for both LDAPS endpoints.
+
+
+Proxmox realm migration
+
+Backed up the existing Proxmox authentication configuration to:
+
+/root/domains.cfg.pre-ldaps
+
+The Active Directory realm was then migrated from IP-based LDAP to FQDN-based LDAPS using:
+
+• Primary: `dc01.rain.lab`
+• Fallback: `dc02.rain.lab`
+• Mode: `ldaps`
+• Port: `636`
+• Certificate verification: enabled
+
+
+Authentication validation
+
+Validated a fresh Proxmox domain login through DC01 after the LDAPS conversion.
+
+A controlled DC01 outage was then performed and a fresh Proxmox domain login successfully authenticated through DC02. This confirmed the fallback server functioned correctly over LDAPS.
+
+
+LDAP signing enforcement
+
+Created a backup of the Default Domain Controllers Policy under:
+
+C:\GPO-Backup
+
+Changed:
+
+Domain controller: LDAP server signing requirements
+
+to:
+
+Require signing
+
+Updated policy on both DCs and validated:
+
+LDAPServerIntegrity : 2
+
+
+Final validation
+
+With LDAP signing still set to Require signing:
+
+• Proxmox domain authentication passed.
+• DC01 primary authentication passed.
+• Controlled DC01 outage/failover passed.
+• DC02 successfully handled Proxmox authentication.
+• Recent 2888/2889 validation produced the desired result with no new insecure Proxmox LDAP bind events.
+
+
+BACKUP / RECOVERY LOCATIONS
+
+Backup / Evidence | Location | Purpose
+----------------------------------------------------------------------------------------------------
+| Default Domain Controllers Policy backup | C:\GPO-Backup | Restore the pre-signing GPO if required |
+| Pre-LDAPS Proxmox realm configuration | /root/domains.cfg.pre-ldaps | Restore the previous Proxmox realm configuration |
+| Exported CA certificate | C:\Temp\rain-DC-CA.cer | Windows-side public CA export |
+| Proxmox CA copy | /root/rain-DC-CA.cer | Original transferred CA file |
+| Installed Proxmox CA | /usr/local/share/ca-certificates/rain/rain-DC-CA.crt | Trusted PEM-formatted CA used by Debian/OpenSSL |
+
+
+RESULT
+
+The original insecure LDAP dependency was removed without disrupting Active Directory authentication.
+
+The environment now has:
+
+• Certificate-validated LDAPS between Proxmox and Active Directory
+• Working primary/fallback authentication across DC01 and DC02
+• LDAP signing enforced on the domain controllers
+• Successful failover while `Require signing` is active
+• No new insecure Proxmox LDAP bind events during final validation
+• Documented recovery points for both the Proxmox realm and domain-controller GPO
+
+
+WHY THE WORK REQUIRED MULTIPLE STAGES
+
+This could not safely be handled by immediately enabling LDAP signing. The initial audit proved that Proxmox was actively using an insecure bind method that would have failed once signing was required.
+
+The work therefore required sequencing and validating several dependencies:
+
+1. Audit live LDAP traffic.
+2. Identify the source of insecure binds.
+3. Verify LDAPS network reachability on both DCs.
+4. Validate the certificates presented by both DCs.
+5. Diagnose OpenSSL trust errors 20/21.
+6. Identify the correct internal CA certificate.
+7. Correct the CA file format and install it into the Debian trust store.
+8. Prove certificate validation succeeded for both domain controllers.
+9. Migrate Proxmox to LDAPS without losing administrative access.
+10. Validate both primary and fallback authentication.
+11. Back up the domain-controller policy.
+12. Enforce LDAP signing.
+13. Repeat authentication and failover testing with the security control active.
+14. Confirm the insecure LDAP event pattern no longer occurred.
+
+The additional validation was necessary to avoid an authentication outage while moving the environment from insecure LDAP to enforced signed/encrypted directory authentication.
+
+
+FOLLOW-UP
+
+Create a dedicated least-privilege AD lookup/service account for the Proxmox bind identity and replace the current privileged bind account in a separate controlled change.
