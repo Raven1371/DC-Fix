@@ -1,0 +1,67 @@
+===== PHASE 3 PRECHECK =====
+Computer: DC01
+Time: 10/07/2026 12:49:54
+
+===== SMB CLIENT =====
+
+
+EnableSecuritySignature  : True
+RequireSecuritySignature : False
+
+
+
+
+===== SMB SERVER =====
+
+
+EnableSecuritySignature  : True
+RequireSecuritySignature : True
+
+
+
+
+===== SMB1 =====
+
+
+FeatureName : SMB1Protocol
+State       : Disabled
+
+
+
+
+===== ACTIVE SMB CONNECTIONS =====
+
+===== UNSIGNED ACTIVE SMB CONNECTIONS =====
+
+===== LSA / ANONYMOUS ACCESS =====
+
+
+restrictanonymous         : 0
+restrictanonymoussam      : 1
+everyoneincludesanonymous : 0
+LmCompatibilityLevel      : 
+
+
+
+
+===== NULL SESSION SETTINGS =====
+
+
+restrictnullsessaccess : 1
+NullSessionPipes       : {, netlogon, samr, lsarpc}
+NullSessionShares      : 
+
+
+
+
+===== LM COMPATIBILITY REGISTRY QUERY =====
+
+
+reg : ERROR: The system was unable to find the specified registry key or value.
+At line:48 char:2
++ (reg query "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v LmCompatibi ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: The syst...y key or value.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
