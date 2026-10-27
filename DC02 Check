@@ -1,0 +1,182 @@
+**********************
+Windows PowerShell transcript start
+Start time: 20261027144943
+Username: RAIN\koflanery_adm
+RunAs User: RAIN\koflanery_adm
+Configuration Name: 
+Machine: DC01 (Microsoft Windows NT 10.0.17763.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 6636
+PSVersion: 5.1.17763.9376
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.17763.9376
+BuildVersion: 10.0.17763.9376
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Temp\DC01-SMB-NTLM-Final-Validation.txt
+PS C:\Windows\system32> Write-Output "`n===== SYSTEM INFORMATION ====="
+
+===== SYSTEM INFORMATION =====
+PS C:\Windows\system32> Get-Date
+
+Tuesday, October 27, 2026 2:49:43 PM
+
+
+PS C:\Windows\system32> hostname
+DC01
+PS C:\Windows\system32> Write-Output "`n===== SMB CLIENT SIGNING ====="
+
+===== SMB CLIENT SIGNING =====
+PS C:\Windows\system32> Get-SmbClientConfiguration |
+    Select-Object EnableSecuritySignature, RequireSecuritySignature |
+    Format-List
+
+
+EnableSecuritySignature  : True
+RequireSecuritySignature : True
+
+
+
+PS C:\Windows\system32> Write-Output "`n===== SMB SERVER SIGNING ====="
+
+===== SMB SERVER SIGNING =====
+PS C:\Windows\system32> Get-SmbServerConfiguration |
+    Select-Object EnableSecuritySignature, RequireSecuritySignature |
+    Format-List
+
+
+EnableSecuritySignature  : True
+RequireSecuritySignature : True
+
+
+
+PS C:\Windows\system32> Write-Output "`n===== SMBv1 STATUS ====="
+
+===== SMBv1 STATUS =====
+PS C:\Windows\system32> Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol |
+    Select-Object FeatureName, State |
+    Format-List
+
+
+FeatureName : SMB1Protocol
+State       : Disabled
+
+
+
+PS C:\Windows\system32> Write-Output "`n===== ACTIVE SMB CONNECTIONS ====="
+
+===== ACTIVE SMB CONNECTIONS =====
+PS C:\Windows\system32> Get-SmbConnection |
+    Select-Object ServerName, ShareName, Dialect, Signed, Encrypted |
+    Format-Table -AutoSize
+PS C:\Windows\system32> Write-Output "`n===== UNSIGNED SMB CONNECTIONS ====="
+
+===== UNSIGNED SMB CONNECTIONS =====
+PS C:\Windows\system32> Get-SmbConnection |
+    Where-Object { $_.Signed -eq $false } |
+    Format-Table -AutoSize
+PS C:\Windows\system32> Write-Output "`n===== NTLM AUTHENTICATION LEVEL ====="
+
+===== NTLM AUTHENTICATION LEVEL =====
+PS C:\Windows\system32> $Lsa = Get-ItemProperty `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+PS C:\Windows\system32> if ($null -ne $Lsa.LmCompatibilityLevel) {
+    Write-Output "LmCompatibilityLevel: $($Lsa.LmCompatibilityLevel)"
+} else {
+    Write-Output "LmCompatibilityLevel: NOT EXPLICITLY CONFIGURED"
+}
+LmCompatibilityLevel: 5
+PS C:\Windows\system32> Write-Output "`n===== SYSVOL / NETLOGON ====="
+
+===== SYSVOL / NETLOGON =====
+PS C:\Windows\system32> Write-Output "SYSVOL Accessible: $(Test-Path '\\rain.lab\SYSVOL')"
+SYSVOL Accessible: True
+PS C:\Windows\system32> Write-Output "NETLOGON Accessible: $(Test-Path '\\rain.lab\NETLOGON')"
+NETLOGON Accessible: True
+PS C:\Windows\system32> Write-Output "`n===== AD REPLICATION ====="
+
+===== AD REPLICATION =====
+PS C:\Windows\system32> repadmin /replsummary
+Replication Summary Start Time: 2026-10-27 14:49:45
+
+Beginning data collection for replication summary, this may take awhile:
+  .....
+
+
+Source DSA          largest delta    fails/total %%   error
+ DC01                      57m:18s    0 /   5    0
+ DC02                      58m:57s    0 /   5    0
+
+
+Destination DSA     largest delta    fails/total %%   error
+ DC01                      58m:57s    0 /   5    0
+ DC02                      57m:18s    0 /   5    0
+PS C:\Windows\system32> Write-Output "`n===== APPLIED COMPUTER GPOs ====="
+
+===== APPLIED COMPUTER GPOs =====
+PS C:\Windows\system32> gpresult /scope computer /r
+
+Microsoft (R) Windows (R) Operating System Group Policy Result tool v2.0
+© 2018 Microsoft Corporation. All rights reserved.
+
+Created on ‎10/‎27/‎2026 at 2:49:46 PM
+
+
+RSOP data for  on DC01 : Logging Mode
+--------------------------------------
+
+OS Configuration:            Primary Domain Controller
+OS Version:                  10.0.17763
+Site Name:                   Default-First-Site-Name
+Roaming Profile:
+Local Profile:
+Connected over a slow link?: No
+
+
+COMPUTER SETTINGS
+------------------
+    CN=DC01,OU=Domain Controllers,DC=rain,DC=lab
+    Last time Group Policy was applied: 10/27/2026 at 2:45:18 PM
+    Group Policy was applied from:      DC01.rain.lab
+    Group Policy slow link threshold:   500 kbps
+    Domain Name:                        RAIN
+    Domain Type:                        Windows 2008 or later
+
+    Applied Group Policy Objects
+    -----------------------------
+        Default Domain Policy
+        SurePass cert
+        WSUS GPO
+        Default Domain Controllers Policy
+
+    The following GPOs were not applied because they were filtered out
+    -------------------------------------------------------------------
+        Local Group Policy
+            Filtering:  Not Applied (Empty)
+
+    The computer is a part of the following security groups
+    -------------------------------------------------------
+        BUILTIN\Administrators
+        Everyone
+        BUILTIN\Pre-Windows 2000 Compatible Access
+        BUILTIN\Users
+        Certificate Service DCOM Access
+        Windows Authorization Access Group
+        NT AUTHORITY\NETWORK
+        NT AUTHORITY\Authenticated Users
+        This Organization
+        DC01$
+        Domain Controllers
+        NT AUTHORITY\ENTERPRISE DOMAIN CONTROLLERS
+        Authentication authority asserted identity
+        Denied RODC Password Replication Group
+        Cert Publishers
+        System Mandatory Level
+PS C:\Windows\system32> Stop-Transcript
+**********************
+Windows PowerShell transcript end
+End time: 20261027144946
+**********************
