@@ -1,0 +1,63 @@
+
+# SMB / NTLM Phase 3 Post-Change Validation
+# Run locally on DC01 and DC02 as Administrator
+
+$Folder = "C:\Temp"
+New-Item -ItemType Directory -Path $Folder -Force | Out-Null
+
+$Report = "$Folder\$env:COMPUTERNAME-SMB-NTLM-Final-Validation.txt"
+
+Start-Transcript -Path $Report -Force
+
+Write-Output "`n===== SYSTEM INFORMATION ====="
+Get-Date
+hostname
+
+Write-Output "`n===== SMB CLIENT SIGNING ====="
+Get-SmbClientConfiguration |
+    Select-Object EnableSecuritySignature, RequireSecuritySignature |
+    Format-List
+
+Write-Output "`n===== SMB SERVER SIGNING ====="
+Get-SmbServerConfiguration |
+    Select-Object EnableSecuritySignature, RequireSecuritySignature |
+    Format-List
+
+Write-Output "`n===== SMBv1 STATUS ====="
+Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol |
+    Select-Object FeatureName, State |
+    Format-List
+
+Write-Output "`n===== ACTIVE SMB CONNECTIONS ====="
+Get-SmbConnection |
+    Select-Object ServerName, ShareName, Dialect, Signed, Encrypted |
+    Format-Table -AutoSize
+
+Write-Output "`n===== UNSIGNED SMB CONNECTIONS ====="
+Get-SmbConnection |
+    Where-Object { $_.Signed -eq $false } |
+    Format-Table -AutoSize
+
+Write-Output "`n===== NTLM AUTHENTICATION LEVEL ====="
+$Lsa = Get-ItemProperty `
+    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+
+if ($null -ne $Lsa.LmCompatibilityLevel) {
+    Write-Output "LmCompatibilityLevel: $($Lsa.LmCompatibilityLevel)"
+} else {
+    Write-Output "LmCompatibilityLevel: NOT EXPLICITLY CONFIGURED"
+}
+
+Write-Output "`n===== SYSVOL / NETLOGON ====="
+Write-Output "SYSVOL Accessible: $(Test-Path '\\rain.lab\SYSVOL')"
+Write-Output "NETLOGON Accessible: $(Test-Path '\\rain.lab\NETLOGON')"
+
+Write-Output "`n===== AD REPLICATION ====="
+repadmin /replsummary
+
+Write-Output "`n===== APPLIED COMPUTER GPOs ====="
+gpresult /scope computer /r
+
+Stop-Transcript
+
+Write-Host "`nValidation report saved to: $Report"
